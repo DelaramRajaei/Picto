@@ -42,21 +42,24 @@ public class DBConnection {
     }
 
     public void addData(String tableName) {
-        Scanner scan=new Scanner(System.in);
-        String sql=new String();
+        Scanner scan = new Scanner(System.in);
+        String sql ="INSERT INTO ".concat(tableName + " VALUES(") ;
         try {
-            rs = st.executeQuery("select * from" + " " + tableName);
+            rs = st.executeQuery("select * from " + tableName);
             metadata = rs.getMetaData();
             int numberOfColumns = metadata.getColumnCount();
 
-            while (rs.next()) {
-                for (int i = 1; i <= numberOfColumns; i++) {
 
-                    System.out.print("Plz enter" + metadata.getColumnName(i) + ":");
-                    sql=scan.next()+", "+sql;
-                }
+            for (int i = 1; i <= numberOfColumns; i++) {
+                System.out.print("Plz enter " + metadata.getColumnName(i) + ":");
+                sql =sql+"'"+ scan.next()+"'";
+                if (i!=numberOfColumns)sql=sql+",";
 
             }
+            sql = sql + ")";
+            st=con.createStatement();
+            st.executeUpdate(sql);
+
         } catch (Exception e) {
             System.out.println("Error :" + e);
         }
